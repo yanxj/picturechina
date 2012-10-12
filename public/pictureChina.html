@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="stylesheets/pictureChina.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<script type="text/javascript" src='javascripts/jquery-1.8.1.min.js'></script>
+<script type="text/javascript" src='javascripts/pageturn.js'></script>
+<script type="text/javascript" src='javascripts/pagesplit.js'></script>
+<script src="javascripts/pictureChina.js" ></script>
+<script src="javascripts/yzh_fetch.js"></script>
+<body>
+<div id="doc">
+ <div id = "down">
+    <!--<div id = "choice1" style="background-color: red;"><img id="autoplay" src="images/autoplay.png" alt="" style="background-color: green;"></div>-->
+     <a id="back" href="#" data-transition="flip"><img id="autoplay" src="images/home.png" alt="" ></a>
+ </div>
+<div id="wrap">
+</div>
+    <div id = "up">
+    </div>
+</div>
+
+
+<script>
+       function request(paras){
+        var url = location.href;
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+        var paraObj = {}
+        for (i=0; j=paraString[i]; i++){
+            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf
+                    ("=")+1,j.length);
+        }
+        $("#back").attr("href","/index.html?"+paraString[1]);
+        var returnValue = paraObj[paras.toLowerCase()];
+        if(typeof(returnValue)=="undefined"){
+            return "";
+        }else{
+            return returnValue;
+        }
+    }
+
+
+    var data;
+
+    var showresult = function (datas) {
+        data = datas;
+
+        var buf = [];
+
+
+
+        $.each(datas, function (i, domEle) {
+            buf.push('<section class="jq_swipe_image" id="swipe_div_' + i + '"><img id="swipe_img_' + domEle.id + '" src="' + domEle.lurl + '" border="0">' +'<p></p>'+
+                    '<h2>page'+i+'</h2>'+
+                    '<div class="page-text" id="text'+ i +'">Lorem ipsum dolor sit amet, consectur whatever blah.</div></section>');
+        });
+
+        $("#wrap").html(buf.join(''));
+        $('#doc').on('touchstart touchmove touchend', function (e) {
+//            e.preventDefault();
+        });
+        css3Flip = Css3Flip("#wrap");
+        analyticData(null, datas,"#up");
+
+    }
+
+    var theurl
+    theurl=request("imgsurl");
+    if (theurl!=''){
+
+        yzh_fetchDATA.getOneNewsList(theurl, showresult);
+    }
+
+
+
+//
+//var buf = [];
+////获取数据
+//var url = "http://localhost:3000/javascripts/jj.js";
+//getData(url);
+//var css3Flip = null;
+//function getData(url) {
+//    $.getScript(url)
+//            .success(
+//            function () {
+//                $.each(data.items, function (key, value) {
+//                    buf.push('<section class="jq_swipe_image" id="swipe_div_' + key + '"><img id="swipe_img_' + value.id + '" src="' + value.picurl + '" border="0">' +'<p></p>'+
+//                            '<h2>page'+key+'</h2>'+
+//                            '<div class="page-text" id="text'+ key +'">Lorem ipsum dolor sit amet, consectur whatever blah.</div></section>');
+//                });
+//                $("#wrap").html(buf.join(''));
+//                $('#doc').on('touchstart touchmove touchend', function (e) {
+//                    e.preventDefault();
+//                });
+//                css3Flip = Css3Flip("#wrap");
+//                analyticData(null, data.items,"#up");
+////                (function(value) {
+////                    setScrollImgLinkAge(value.id, css3Flip.currentPoint);
+////                })(window);
+//            }).error(function () {
+//                alert("获取图片失败，请刷新重试！");
+//            });
+//}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>HTML5图片滚动效果</title>
+<!--页面编码-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<!--initial-scale初始缩放比例,maximum-scale允许缩放的最大比例-->
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+<!--设置工程是否全屏运行-->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!--设置状态栏的style(black-translucent,black,default)-->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!--用户是否可以手动缩 (no,yes)-->
+<meta name="viewport" content="user-scalable=no, width=device-width"/>
+<!--设置页面宽度-->
+<!--<meta name="viewport" content="width=320"/>-->
+
+<!--页面最小宽度是1024时加载style.css-->
+<link rel="stylesheet" media="screen and (min-width: 1025px)" href="stylesheets/test_h_style.css">
+<link rel="stylesheet" media="screen and (max-width: 1024px) and (min-width:700px) and (orientation:portrait)"
+      href="stylesheets/test_h_style.css">
+<link rel="stylesheet" media="screen and (max-width: 1024px) and (min-width:700px) and (orientation:landscape)"
+      href="stylesheets/test_h_style.css">
+
+<script type="text/javascript" src='javascripts/jquery-1.8.1.min.js'></script>
+<script src="javascripts/pagecontrol.js"></script>
+<script src="javascripts/imagescroll.js"></script>
+<script src="javascripts/yzh_fetch.js"></script>
+    <script src="javascripts/columns.js"></script>
+<script>
+var xmlUrl="http://www.china.com.cn/photo/zhuanti/7121183.xml";
+var articlelist = {"items":[
+    {"ircEvent":"PRIVMSG", "method":"newURI", "regex":"^http://.*"},
+    {"ircEvent":"PRIVMSG", "method":"deleteURI", "regex":"^delete.*"},
+    {"ircEvent":"PRIVMSG", "method":"randomURI", "regex":"^random.*"}
+]
+};
+
+
+var showresult = function (data) {
+    articlelist = data;
+
+
+//初始化
+    var curpagenum = 1;
+
+    //分页标示对象
+    var page_ = $("#page");
+
+    var overflow_=$("#overflow");
+
+//首页滚图对象
+    var topimages = $("#overflow_top .inner_top")
+    //首页滚图对象分页标示
+    var page_top = $("#page_top");
+//首页列表区域对象
+    var firstlist = $("#J_ListContent1 .main-view-list");
+
+//初始化高度
+    overflow_.width($("#overflow  .page").width().valueOf() * $("#overflow  .page").length);
+
+
+
+    $.each(data, function (i, domEle) {
+        //$("#result2").append("<p>" + domEle['title'] + "</p>");
+
+        var entity_title = domEle['title'];
+        var entity_picurl = domEle['picurl'];
+if(typeof entity_picurl == 'string')
+        entity_picurl = entity_picurl.replace("/data", "http://images.china.cn");
+
+//第一页大图横滚
+        if (i < 4) {
+
+            var $img = $('<img  index='+ i+'  src="' + entity_picurl + '" />');
+            topimages.append($img);
+
+            if (i == 0) {
+                page_top.append("<label class='highlight' ></label>");
+            } else {
+                page_top.append("<label class='nohighlight' ></label>");
+            }
+
+            if (i == 3) {
+
+                $("#overflow_top .inner_top").width($("#overflow_top .inner_top   img").width().valueOf() * $("#overflow_top .inner_top  img").length);
+
+            }
+
+        }
+//第一页列表信息
+        if (i >= 4 && i <= 7) {
+
+
+            var $li = $('<li class="list-item list-item-combine list-item-flag list-item-first" ><div class="list-ibox"><h3 class="title"><a  href=""  index='+ i+'  class="J_ItemDesc">' + entity_title + '</a></h3><div class="pic s220"> <a  href="www.baidu.com" ><img  index='+ i+'  src="' + entity_picurl + '"></a></div></div></li>');
+            firstlist.append($li);
+
+        }
+//第二页以后
+        if (i > 7) {
+
+
+            if ((i - 8) % 12 == 0) {
+                //添加一页
+
+                curpagenum++;
+                overflow_.append('<article class="page"><div id="J_ListContent' + curpagenum + '" class="list-content"><ul class="main-view-list"></ul></div></article>');
+                overflow_.width($("#overflow  .page").width().valueOf() * $("#overflow  .page").length);
+
+
+            }
+            var $li = $('<li class="list-item list-item-combine list-item-flag " ><div class="list-ibox"><h3 class="title"><a  href="" index='+ i+'  class="J_ItemDesc">' + entity_title + '</a></h3><div class="pic s220"> <a  href="" ><img index='+ i+' src="' + entity_picurl + '"></a></div></div></li>');
+            $("#J_ListContent" + curpagenum + " .main-view-list").append($li);
+
+
+        }
+
+//设置分页标示
+        if (i == data.length - 1) {
+
+            for (var j = 0; j < curpagenum; j++) {
+                if (j == 0) {
+                    page_.append("<label class='highlight' ></label>");
+                } else {
+                    page_.append("<label class='nohighlight' ></label>");
+                }
+
+                //监听图片点击事件
+                var click = true;
+
+                $('#J_ListContent'+(j+1)+' .main-view-list').on(
+                        'touchstart touchmove touchend',
+                        function (e) {
+                            e.preventDefault();
+
+
+                            //e.stopPropagation();
+                            var $click = $(e.target);
+
+
+                            if (e.type == 'touchstart') {
+
+                                click = true;
+
+                            }
+                            if (e.type == 'touchmove') {
+
+                                click = false;
+
+                            }
+                            if (e.type == 'touchend') {
+
+                                if (click) {
+                                    e.stopPropagation();
+
+                                    console.log($click.attr("index"));
+                                    var index = $click.attr("index").valueOf();
+                                    console.log(articlelist[index]);
+                                    location.href="../pictureChina.html?imgsurl="+articlelist[index].url+"&"+xmlUrl;
+
+                                }
+                                click = true;
+
+                            }
+
+                        });
+
+
+
+            }
+        }
+
+
+    });
+
+}
+
+function request(paras){
+    var url = location.href;
+    var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+    xmlUrl=paraString;
+    var paraObj = {}
+    for (i=0; j=paraString[i]; i++){
+        paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf
+                ("=")+1,j.length);
+    }
+    var returnValue = paraObj[paras.toLowerCase()];
+    if(typeof(returnValue)=="undefined"){
+        return "";
+    }else{
+        return returnValue;
+    }
+}
+window.onload = function () {
+
+    columns("http://192.168.1.108:3000/javascripts/columnsjson.js",null);
+    var XINWEN = "http://www.china.com.cn/photo/zhuanti/7121183.xml"; // 新闻
+    var RENWEN = "http://www.china.com.cn/photo/zhuanti/7121184.xml";// 人文
+    var MEITU = "http://www.china.com.cn/photo/zhuanti/7121185.xml";// 美图
+    var QUTU = "http://www.china.com.cn/photo/zhuanti/7121186.xml";// 趣图
+
+
+    var theurl = "http://www.china.com.cn/photo/zhuanti/7121183.xml";
+
+    if (request("url")!=''){
+
+        theurl=request("url");
+    }
+
+    yzh_fetchDATA.getDATA(theurl, showresult);
+};
+
+
+</script>
+
+</head>
+
+<body>
+<div id="main" style="position: relative;">
+
+    <div id="overflow">
+        <article class="page">
+
+            <!-- 首页大图展示栏-->
+            <div id="firstdiv">
+                <div id="overflow_top" class="left">
+                    <div class="inner_top">
+
+                    </div>
+
+                </div>
+                <ul class="nav-map-wrapper left">
+                    <li style="background-color: red;"></li>
+                    <li style="background-color: blue;"></li>
+                    <li style="background-color: red;"></li>
+                </ul>
+                <!-- #overflow_top -->
+                <div id="page_top" ></div>
+
+
+            </div>
+
+            <!-- 首页列表标题栏-->
+            <div class="list-title">
+
+            </div>
+            <!-- 首页横屏列表栏-->
+            <div id="J_ListContent1" class="list-content">
+                <ul class="main-view-list ">
+
+
+                </ul>
+            </div>
+
+
+        </article>
+
+
+    </div>
+    <!-- #overflow -->
+
+    <div id="page" style="position: absolute;bottom:100px;left:500px;"></div>
+</div>
+</body>
+</html>

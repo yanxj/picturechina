@@ -1,0 +1,70 @@
+ body {
+    font-family:"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #fff;
+    font-size: 12px;
+    background: #000;
+}
+
+#doc {
+    margin: 0 auto;
+    background-color: #000000;
+    position: absolute;
+    display: block;
+    width: 800px;
+    height: 2000px;
+    overflow:hidden;
+    -webkit-transform-style:preserve-3d;
+}
+section {
+    /*border: 10px solid #333;*/
+    font-size: 10px;
+    text-align: center;
+    width: 700px;
+    margin: 0 40px;
+    height: 600px;
+    /*min-height: 600px;*/
+    overflow: hidden;
+    /*background-color: red;*/
+}
+#wrap {
+    display: -webkit-box;
+    cursor: move;
+    margin-top: 5px;
+}
+
+#down{
+    background-color:rgba(10,10,10,0.3);
+    width:800px;
+    /*height:100px;*/
+    height:50px;
+    position: absolute;
+    z-index: 1000;
+}
+ #autoplay{
+ display: block;
+ width:90px;
+ height: 50px;
+ position: absolute;
+     margin-bottom: 200px;
+     left: 50px;
+ }
+#up{
+background-color:rgba(10,10,10,0.3);
+/*background-color: red;*/
+     width:800px;
+     height:140px;
+     position: absolute;
+     z-index: 1000;
+ }
+
+ .page-text{
+     display: block;
+     position: absolute;
+     top: 450px;
+     margin-left: 100px;
+     z-index: 1000;
+     width: 200px;
+     background-color:#bc8f8f;
+     font-size: 20px;
+     text-align: center;
+ }
